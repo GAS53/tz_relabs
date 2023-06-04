@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>вкладка</title>
+        <style>
+        ul {
+            list-style: none;
+           }
+          </style>
+    </head>
+    <body>
+        <h1>Тестовое задание для relabs</h1>
+        <form action="" onsubmit="sendMessage(event)">
+            <input type="text" id="messageText" autocomplete="off"/>
+            <button>Отправить</button>
+        </form>
+        <h4>Список сообщений нумерованный с 1:</h4>
+        <ul list-style:="none" id='ul'></ul>
+         
+        <script>
+            var ws = new WebSocket("ws://localhost:8000/ws");
+            ws.onmessage = function(event) {
+
+                let my_obj = JSON.parse(event.data)
+                let row = `${my_obj.num}) ${my_obj.value}`
+                
+                var ul = document.getElementById('ul')
+                var li = document.createElement('li')
+                var content = document.createTextNode(row)
+                
+                ul.appendChild(li)
+                li.appendChild(content)
+                
+            };
+            function sendMessage(event) {
+                var input = document.getElementById("messageText")
+                let data = { "new_value": input.value, };
+                
+                ws.send(JSON.stringify(data))
+                input.value = ''
+                event.preventDefault()
+            }
+        </script>
+    </body>
+</html>
